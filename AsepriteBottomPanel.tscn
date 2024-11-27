@@ -1,0 +1,76 @@
+[gd_scene load_steps=2 format=3 uid="uid://bfmc7ys76un7l"]
+
+[ext_resource type="Script" path="res://aseprite_bottom_panel.gd" id="1_6j0em"]
+
+[node name="AsepriteBottomPanel" type="HSplitContainer"]
+offset_right = 172.0
+offset_bottom = 27.0
+script = ExtResource("1_6j0em")
+
+[node name="Files" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="Header" type="Label" parent="Files"]
+layout_mode = 2
+text = "Files"
+
+[node name="List" type="ItemList" parent="Files"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Animations" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Header" type="HBoxContainer" parent="Animations"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Animations/Header"]
+layout_mode = 2
+text = "SpriteFrames"
+
+[node name="VSeparator" type="VSeparator" parent="Animations/Header"]
+layout_mode = 2
+
+[node name="Filters" type="HBoxContainer" parent="Animations/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Tag" type="HBoxContainer" parent="Animations/Header/Filters"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Header" type="Label" parent="Animations/Header/Filters/Tag"]
+layout_mode = 2
+text = "Tag"
+
+[node name="Select" type="OptionButton" parent="Animations/Header/Filters/Tag"]
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 2
+popup/item_0/text = "Test"
+popup/item_1/text = "Test2"
+popup/item_1/id = 1
+
+[node name="Slice" type="HBoxContainer" parent="Animations/Header/Filters"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Header" type="Label" parent="Animations/Header/Filters/Slice"]
+layout_mode = 2
+text = "Slice"
+
+[node name="Select" type="OptionButton" parent="Animations/Header/Filters/Slice"]
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 2
+popup/item_0/text = "Test"
+popup/item_1/text = "Test2"
+popup/item_1/id = 1
+
+[node name="Container" type="PanelContainer" parent="Animations"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[connection signal="item_selected" from="Files/List" to="." method="on_filelist_item_selected"]

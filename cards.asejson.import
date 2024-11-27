@@ -1,0 +1,14 @@
+[remap]
+
+importer="kz.asejson"
+type="SpriteFrames"
+uid="uid://dap5o75fr308c"
+path="res://.godot/imported/cards.asejson-4940e12f10547666d5655729596851cf.tres"
+
+[deps]
+
+source_file="res://cards.asejson"
+dest_files=["res://.godot/imported/cards.asejson-4940e12f10547666d5655729596851cf.tres"]
+
+[params]
+
