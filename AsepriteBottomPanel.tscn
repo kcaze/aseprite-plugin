@@ -12,6 +12,7 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 
 [node name="Header" type="Label" parent="Files"]
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 text = "Files"
 
@@ -34,6 +35,7 @@ text = "SpriteFrames"
 layout_mode = 2
 
 [node name="Filters" type="HBoxContainer" parent="Animations/Header"]
+custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -48,6 +50,7 @@ text = "Tag"
 [node name="Select" type="OptionButton" parent="Animations/Header/Filters/Tag"]
 layout_mode = 2
 size_flags_horizontal = 3
+disabled = true
 item_count = 2
 popup/item_0/text = "Test"
 popup/item_1/text = "Test2"
@@ -64,13 +67,19 @@ text = "Slice"
 [node name="Select" type="OptionButton" parent="Animations/Header/Filters/Slice"]
 layout_mode = 2
 size_flags_horizontal = 3
+disabled = true
 item_count = 2
 popup/item_0/text = "Test"
 popup/item_1/text = "Test2"
 popup/item_1/id = 1
 
-[node name="Container" type="PanelContainer" parent="Animations"]
+[node name="Frames" type="Panel" parent="Animations"]
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="Container" type="GridContainer" parent="Animations/Frames"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
 [connection signal="item_selected" from="Files/List" to="." method="on_filelist_item_selected"]
