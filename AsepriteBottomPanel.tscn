@@ -73,13 +73,13 @@ popup/item_0/text = "Test"
 popup/item_1/text = "Test2"
 popup/item_1/id = 1
 
-[node name="Frames" type="Panel" parent="Animations"]
+[node name="Frames" type="PanelContainer" parent="Animations"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Container" type="GridContainer" parent="Animations/Frames"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="Container" type="HFlowContainer" parent="Animations/Frames"]
+layout_mode = 2
 
 [connection signal="item_selected" from="Files/List" to="." method="on_filelist_item_selected"]
+[connection signal="item_selected" from="Animations/Header/Filters/Tag/Select" to="." method="on_tag_selected"]
+[connection signal="item_selected" from="Animations/Header/Filters/Slice/Select" to="." method="on_slice_selected"]

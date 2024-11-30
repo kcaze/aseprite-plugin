@@ -3,6 +3,9 @@ class_name AsepriteBottomPanel
 extends Control
 
 const NONE = "<None>"
+const FRAME_MARGIN_H = 16
+const FRAME_MARGIN_V = 8
+const FRAME_MIN_SIZE = Vector2(64, 64)
 
 var asejsons : Dictionary = {}
 var selected_json : String = ""
@@ -12,11 +15,12 @@ var frames : Array[AtlasTexture] = []
 @onready var filelist : ItemList = $Files/List
 @onready var tagSelect : OptionButton = $Animations/Header/Filters/Tag/Select
 @onready var sliceSelect : OptionButton = $Animations/Header/Filters/Slice/Select
-@onready var frameContainer : GridContainer = $Animations/Frames/Container
+@onready var frameContainer : Container = $Animations/Frames/Container
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	var theme = EditorInterface.get_editor_theme()
+	$Animations/Frames.add_theme_stylebox_override("panel", theme.get_stylebox("panel", "Panel"))
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -53,6 +57,22 @@ func on_filelist_item_selected(idx: int) -> void:
 	
 	refresh_frames()
 
+func on_tag_selected(index: int) -> void:
+	if index == 0:
+		selected_tag = NONE
+	else:
+		index -= 1
+		selected_tag = asejsons[selected_json].content["meta"]["frameTags"][index]["name"]
+	refresh_frames()
+
+func on_slice_selected(index: int) -> void:
+	if index == 0:
+		selected_slice = NONE
+	else:
+		index -= 1
+		selected_slice = asejsons[selected_json].content["meta"]["slices"][index]["name"]
+	refresh_frames()
+
 # Parse the "frames" field in Aseprite's spritesheet json.
 # The data is encoded as "<filename> <frame_number>.<extension>".
 func parse_frames(frame_data):
@@ -70,10 +90,9 @@ func parse_frames(frame_data):
 	return ret
 
 func refresh_frames():
-	for frame in frames:
+	for frame in frameContainer.get_children():
 		frame.queue_free()
 	frames.clear()
-	
 	
 	var texture_path = asejsons[selected_json].path.split(".")[0] + ".png"
 	var atlas : Texture2D = load(texture_path)
@@ -83,15 +102,20 @@ func refresh_frames():
 	var frame_tags = meta["frameTags"]
 	var slices = meta["slices"]
 	
-	var frame_from = frame_tags[selected_tag]["from"] if selected_tag in frame_tags else 0
-	var frame_to = frame_tags[selected_tag]["to"] if selected_tag in frame_tags else len(frames)
+	var frame_from = 0
+	var frame_to = len(frames)
+	for tag in frame_tags:
+		if tag["name"] == selected_tag:
+			frame_from = tag["from"]
+			frame_to = tag["to"]+1
 	
 	var slice_rect = null
-	if selected_slice in slices:
-		var bounds = slices[selected_slice]["keys"][0]["bounds"]
-		slice_rect = Rect2(bounds["x"], bounds["y"], bounds["w"], bounds["h"])
+	for slice in slices:
+		if slice["name"] == selected_slice:
+			var bounds = slice["keys"][0]["bounds"]
+			slice_rect = Rect2(bounds["x"], bounds["y"], bounds["w"], bounds["h"])
 	
-	for f in range(frame_from, frame_to+1):
+	for f in range(frame_from, frame_to):
 		var frameRect = frames[f]["frame"]
 		var region = Rect2(frameRect["x"], frameRect["y"], frameRect["w"], frameRect["h"])
 		
@@ -102,8 +126,19 @@ func refresh_frames():
 		var frame = AtlasTexture.new()
 		frame.atlas = atlas
 		frame.region = region
+		frame.filter_clip = true
 		
 		var textureRect = TextureRect.new()
 		textureRect.texture = frame
-		frameContainer.add_child(textureRect)
+		textureRect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+		textureRect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		
+		var marginContainer = MarginContainer.new()
+		marginContainer.add_theme_constant_override("margin_top", FRAME_MARGIN_V)
+		marginContainer.add_theme_constant_override("margin_left", FRAME_MARGIN_H)
+		marginContainer.add_theme_constant_override("margin_bottom", FRAME_MARGIN_V)
+		marginContainer.add_theme_constant_override("margin_right", FRAME_MARGIN_H)
+		marginContainer.custom_minimum_size = FRAME_MIN_SIZE
+		marginContainer.add_child(textureRect)
+		
+		frameContainer.add_child(marginContainer)
