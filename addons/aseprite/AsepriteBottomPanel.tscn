@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://bfmc7ys76un7l"]
 
-[ext_resource type="Script" path="res://aseprite_bottom_panel.gd" id="1_6j0em"]
+[ext_resource type="Script" path="res://addons/aseprite/aseprite_bottom_panel.gd" id="1_6j0em"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ad3s7"]
 content_margin_left = 6.0

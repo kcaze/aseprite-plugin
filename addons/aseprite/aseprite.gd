@@ -1,7 +1,7 @@
 @tool
 extends EditorPlugin
 
-const S_AsepriteBottomPanel = preload("res://AsepriteBottomPanel.tscn")
+const S_AsepriteBottomPanel = preload("res://addons/aseprite/AsepriteBottomPanel.tscn")
 const EXT = ".asejson"
 
 var panel : AsepriteBottomPanel
