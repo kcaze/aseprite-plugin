@@ -27,29 +27,29 @@ func _exit_tree():
 	panel.queue_free()
 
 func on_filesystem_changed():
-	scan_filesystem()
+	scanFilesystem()
 	panel.refresh()
 
-func scan_filesystem():
+func scanFilesystem():
 	asejsons.clear()
 	var root = filesystem.get_filesystem()
-	scan_directory(root)
+	scanDirectory(root)
 	# TODO: Compute minimally disambiguating keys for each filepath and use that.
 
-func scan_directory(directory : EditorFileSystemDirectory):
+func scanDirectory(directory : EditorFileSystemDirectory):
 	for idx in directory.get_file_count():
 		var file = directory.get_file(idx)
 		if file.ends_with(EXT):
 			var path = directory.get_file_path(idx)
 			var asejson = Asejson.new()
 			asejson.path = path
-			asejson.content = parse_asejson(path)
+			asejson.content = parseAsejson(path)
 			asejsons[path] = asejson
 	for idx in directory.get_subdir_count():
 		var subdirectory = directory.get_subdir(idx)
-		scan_directory(directory.get_subdir(idx))
+		scanDirectory(directory.get_subdir(idx))
 
-func parse_asejson(path: String):
+func parseAsejson(path: String):
 	var file = FileAccess.open(path, FileAccess.READ)
 	var content = file.get_as_text()
 	file.close()
