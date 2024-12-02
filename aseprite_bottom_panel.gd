@@ -11,20 +11,36 @@ var asejsons : Dictionary = {}
 var selected_json : String = ""
 var selected_slice : String = ""
 var selected_tag : String = ""
+var selected_spriteFrames : String = ""
 var frames : Array[AtlasTexture] = []
+var spriteFrameSelectDialog : EditorFileDialog = EditorFileDialog.new()
+var plugin : EditorPlugin
+
 @onready var filelist : ItemList = $Files/List
+@onready var spriteFrameSelect : MenuButton = $Animations/Header/SpriteFrame/Select
+@onready var spriteFrameSelectMenu : PopupMenu = $Animations/Header/SpriteFrame/Select.get_popup()
 @onready var tagSelect : OptionButton = $Animations/Header/Filters/Tag/Select
 @onready var sliceSelect : OptionButton = $Animations/Header/Filters/Slice/Select
 @onready var frameContainer : Container = $Animations/Frames/Container
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	spriteFrameSelectMenu.index_pressed.connect(self.on_spriteframeSelectMenu_pressed)
+	initializeTheme()
+	initializeSpriteFrameSelectDialog()
+
+func initializeTheme():
 	var theme = EditorInterface.get_editor_theme()
 	$Animations/Frames.add_theme_stylebox_override("panel", theme.get_stylebox("panel", "Panel"))
+	spriteFrameSelect.add_theme_stylebox_override("normal", theme.get_stylebox("panel", "Panel"))
+	spriteFrameSelectMenu.set_item_icon(0, theme.get_icon("New", "EditorIcons"))
+	spriteFrameSelectMenu.set_item_icon(1, theme.get_icon("Load", "EditorIcons"))
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+func initializeSpriteFrameSelectDialog():
+	var dialog = spriteFrameSelectDialog
+	dialog.title = "Select SpriteFrames file"
+	dialog.add_filter("*.tres, *.res", "SpriteFrames Resources")
+	dialog.file_selected.connect(self.on_spriteFrameSelectDialog_selected)
+	add_child(spriteFrameSelectDialog)
 
 func refresh():
 	filelist.clear()
@@ -54,6 +70,11 @@ func on_filelist_item_selected(idx: int) -> void:
 	tagSelect.add_item(NONE)
 	for tag in tags:
 		tagSelect.add_item(tag)
+	
+	var path = asejsons[selected_json]["path"]
+	path = path.split(".")[0] + ".tres"
+	spriteFrameSelectDialog.current_path = path
+	spriteFrameSelect.disabled = false
 	
 	refresh_frames()
 
@@ -142,3 +163,23 @@ func refresh_frames():
 		marginContainer.add_child(textureRect)
 		
 		frameContainer.add_child(marginContainer)
+
+func on_spriteframeSelectMenu_pressed(index: int) -> void:
+	if index == 0:
+		spriteFrameSelectDialog.file_mode = EditorFileDialog.FILE_MODE_SAVE_FILE
+	else:
+		spriteFrameSelectDialog.file_mode = EditorFileDialog.FILE_MODE_OPEN_FILE
+	spriteFrameSelectDialog.popup_file_dialog()
+
+func on_spriteFrameSelectDialog_selected(path: String) -> void:
+	selected_spriteFrames = path
+	if spriteFrameSelectDialog.file_mode == EditorFileDialog.FILE_MODE_SAVE_FILE:
+		var spriteFrames = SpriteFrames.new()
+		ResourceSaver.save(spriteFrames, path)
+		
+		# NOTE: The following 3 lines are crucial in ensuring that the SpriteFrames
+		# resource is updated correctly in the SpriteFrames Editor Bottom Panel when
+		# an existing sprite frame is chosen.
+		spriteFrames.take_over_path(path)
+		EditorInterface.edit_resource(spriteFrames)
+		plugin.make_bottom_panel_item_visible(self)

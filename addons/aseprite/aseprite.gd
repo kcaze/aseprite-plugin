@@ -13,6 +13,7 @@ func _enter_tree():
 	#TODO: Ensure that "asejson" is in the "TextFile Extensions" options under Editor preferences.
 	panel = S_AsepriteBottomPanel.instantiate()
 	panel.asejsons = asejsons
+	panel.plugin = self
 	filesystem = EditorInterface.get_resource_filesystem()
 	json = JSON.new()
 	

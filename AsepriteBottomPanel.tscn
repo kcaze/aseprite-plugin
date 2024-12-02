@@ -1,6 +1,19 @@
-[gd_scene load_steps=2 format=3 uid="uid://bfmc7ys76un7l"]
+[gd_scene load_steps=3 format=3 uid="uid://bfmc7ys76un7l"]
 
 [ext_resource type="Script" path="res://aseprite_bottom_panel.gd" id="1_6j0em"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3d18w"]
+content_margin_left = 6.0
+content_margin_top = 4.0
+content_margin_right = 6.0
+content_margin_bottom = 4.0
+bg_color = Color(0.147, 0.168, 0.203, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 3
+anti_aliasing = false
 
 [node name="AsepriteBottomPanel" type="HSplitContainer"]
 offset_right = 172.0
@@ -27,9 +40,18 @@ size_flags_horizontal = 3
 [node name="Header" type="HBoxContainer" parent="Animations"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Animations/Header"]
+[node name="SpriteFrame" type="HBoxContainer" parent="Animations/Header"]
 layout_mode = 2
-text = "SpriteFrames"
+
+[node name="Select" type="MenuButton" parent="Animations/Header/SpriteFrame"]
+layout_mode = 2
+disabled = true
+text = "SpriteFrame"
+flat = false
+item_count = 2
+popup/item_0/text = "New..."
+popup/item_1/text = "Load..."
+popup/item_1/id = 1
 
 [node name="VSeparator" type="VSeparator" parent="Animations/Header"]
 layout_mode = 2
@@ -76,6 +98,7 @@ popup/item_1/id = 1
 [node name="Frames" type="PanelContainer" parent="Animations"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_3d18w")
 
 [node name="Container" type="HFlowContainer" parent="Animations/Frames"]
 layout_mode = 2
